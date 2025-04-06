@@ -22,16 +22,9 @@ usuario_local = os.environ.get("SUDO_USER", "root")
 # variables de prompt
 modules = ""
 
-main_prompt = f'''{Style.BRIGHT}{Fore.GREEN}╭──({Fore.YELLOW}{usuario_local}@framework{Style.RESET_ALL}{Fore.GREEN}{Style.BRIGHT})-[{Style.RESET_ALL}{Fore.MAGENTA}/{modules}{Fore.GREEN}{Style.BRIGHT}]{Style.RESET_ALL}{Fore.GREEN}
-╰─{Style.BRIGHT}>{Style.RESET_ALL} '''
-
 # variable de bucle principal
 is_running = True
-
-# variables de comandos
-ip = "hostname -i"
-
-
+ 
 
 def modules_list():
     print(f"\n{Fore.BLUE}{Style.BRIGHT}[+]{Style.RESET_ALL} Modulos disponibles:\n")
@@ -48,39 +41,53 @@ def inicio():
          pass
 
 
-def prompt(scanner_prompt):
-    return input(main_prompt)
+def prompt(modules):
+    return input(f'''{Style.BRIGHT}{Fore.GREEN}╭──({Fore.YELLOW}{usuario_local}@framework{Style.RESET_ALL}{Fore.GREEN}{Style.BRIGHT})-[{Style.RESET_ALL}{Fore.MAGENTA}/{modules}{Fore.GREEN}{Style.BRIGHT}]{Style.RESET_ALL}{Fore.GREEN}
+╰─{Style.BRIGHT}>{Style.RESET_ALL} ''')
+
 
 def instrucciones():
-    if modules == "/modules/":
-        print(f"\n{Fore.MAGENTA}{Style.BRIGHT}[+]{Style.RESET_ALL} Comandos en sección módulos:\n")
-        print("list - listar módulos disponibles")
-        print("use <modulo> - usar un módulo")
-        print("back - volver al menú principal\n")
-    else: 
-        print(f"\n{Fore.MAGENTA}{Style.BRIGHT}[+]{Style.RESET_ALL} Comandos en sección módulos:\n")
-        print("iface - lista las interfaces de red")
-        print("ip - muestra la ip actual")
-        print("salir - sale del script")
-        print("clear - limpia la pantalla")
-        print("modules - accede al directorio de módulos\n")
+    if modules == "modules":
+        print("\n╭────────────────────────────────────╮")
+        print("│            Sección {Fore.MAGENTA}Módulos{Style.RESET_ALL}         │")
+        print("╰────────────────────────────────────╯")
+        print("\nComandos disponibles:")
+        print("  list        - Listar módulos disponibles")
+        print("  go <modulo> - Accede al módulo seleccionado")
+        print("  back        - Volver al menú principal\n")
+    else:
+        print("\n╭────────────────────────────────────╮")
+        print(f"│         Comandos {Fore.MAGENTA}Básicos{Style.RESET_ALL}           │")
+        print("╰────────────────────────────────────╯")
+        print("\nComandos disponibles:")
+        print("  salir/exit  - Sale del script")
+        print("  clear       - Limpia la pantalla")
+        print("  modules     - Accede al directorio de módulos")
+        print("  x <comando> - Ejecuta un comando a nivel de sistema (ej. 'x whoami')\n")
+
+def modules_wifi():
+
+
 
 
 def comandos(comando):
     if comando == "help":
         instrucciones()
-    elif comando == "ip":
-        print(f"{Fore.BLUE}{Style.BRIGHT}[+]{Style.RESET_ALL} IP privada actual:\n")
-        os.system(ip)
     elif comando == "clear":
         os.system("clear")
-    elif comando == "salir": 
+    elif comando == "salir" or comando == "exit": 
         sys.exit(0)
     elif comando == "modules": 
         global modules
-        modules = "/modules/"
-    elif comando == "back" and modules == "/modules/":
+        modules = "modules"
+    elif comando == "back" and modules == "modules":
         modules = ""
+    elif comando.startswith("x "):
+        cmd = comando[2:]
+        os.system(cmd)
+    elif comando == "x":
+        print(f"{Fore.RED} [!] 'x' necesita un comando a ejecutar (ex. 'x whoami')")
+
     else:
         print(f"{Style.BRIGHT}{Fore.RED}[!]{Style.RESET_ALL}{Fore.RED} '{comando}' no es un comando válido, escribe help para listar los comandos disponibles.{Style.RESET_ALL}\n")
 
@@ -92,4 +99,3 @@ try:
 
 except KeyboardInterrupt:
     print(f"\n\n{Fore.RED}[!] hasta la vista, baby{Style.RESET_ALL}")
-
