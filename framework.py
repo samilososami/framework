@@ -23,6 +23,7 @@ usuario = os.getlogin()
 # variables de prompt
 modules = ""
 modulo_especifico = ""
+mod = ""
 
 # variable de bucle principal
 is_running = True
@@ -31,6 +32,42 @@ is_running = True
 clearL = "clear"
 clearW = "cls"
  
+
+# ----------- FUNCIONES WIFI ------------
+
+def interfaces_inhalambricas():
+    resultado_iwconfig = subprocess.run(["iwconfig"], capture_output=True, text=True)
+    
+    interfaz_actual = None
+    interfaces_modos = []
+
+    for line in resultado_iwconfig.stdout.splitlines():
+        if line and not line.startswith(' '):
+            interfaz_actual = line.split()[0]
+
+        elif "Mode:" in line and interfaz_actual:
+            contenido = line.split(":")[1].strip()
+            modo_concreto = contenido.split()[0]
+            interfaces_modos.append((interfaz_actual, modo_concreto))
+
+
+    # si no se encuentra ninguna interfaz:
+    if not interfaces_modos:
+        print(f"\n{Fore.RED}[!] No se han encontrado interfaces inhalambricas!")
+    else:
+        cantidad = len(interfaces_modos)
+        print(f"{Fore.BLUE}{Style.BRIGHT}[+]{Style.RESET_ALL} {Fore.CYAN}{cantidad}{Style.RESET_ALL} interfaces inhalambricas encontradas:\n")
+
+        for iface, modo in interfaces_modos:
+            print(f"{Fore.GREEN}Interfaz:{Style.RESET_ALL} {iface}")
+            print(f"{Fore.GREEN}Modo:{Style.RESET_ALL} {modo}\n")
+
+interfaces_inhalambricas()
+
+
+
+
+
 
 def list_modules():
     print("\n╭────────────────────────────────────╮")
@@ -41,6 +78,8 @@ def list_modules():
     print("  bluetooth  - BLE, Bluesnarfing, Enumeración de dispositivos")
     print("  cracking   - Aircrack-ng, Hashcat, JohnTheRipper\n")
 
+
+# funciones de los módulos
 def wifi():
     global modulo_especifico
     modulo_especifico = "/wifi"
@@ -49,6 +88,9 @@ def bluetooth():
     global modulo_especifico
     modulo_especifico = "/bluetooth"
 
+def cracking():
+    global modulo_especifico 
+    modulo_especifico = "/cracking"
 
 
 
@@ -77,8 +119,23 @@ def instrucciones():
         print("╰────────────────────────────────────╯")
         print("\nComandos disponibles:")
         print("  list        - Listar módulos disponibles")
-        print("  go <modulo> - Accede al módulo seleccionado")
+        print("  go <módulo> - Accede al módulo seleccionado")
         print("  back        - Volver al menú principal\n")
+    
+    elif modulo_especifico == "/wifi":
+        print("\n╭────────────────────────────────────╮")
+        print("│               Wifi                 │")
+        print("╰────────────────────────────────────╯")
+        print("\nComandos disponibles:")
+        print("  interfaz  - Muestra y elecciona una interfaz compatible")
+        print("  monitor   - Activa el modo monitor en la interfaz seleccionada")
+        print("  scan      - Escanea las redes cercanas\n")
+
+
+
+
+
+
     else:
         print("\n╭────────────────────────────────────╮")
         print(f"│         Comandos {Fore.MAGENTA}Básicos{Style.RESET_ALL}           │")
@@ -124,8 +181,19 @@ def comandos(comando):
         mod = comando[3:].strip().lower()
         if mod == "wifi":
             wifi()
-    elif mod == "bluetooth":
-        bluetooth()
+        elif mod == "bluetooth":
+            bluetooth()
+        elif mod == "cracking":
+            cracking()
+        else: 
+            print(f"{Fore.RED}[!] El módulo '{mod}' no existe. Escribe {Fore.WHITE}list{Fore.RED} para listar los módulos disponibles.{Style.RESET_ALL}")
+
+    # comandos wifi 
+    elif modulo_especifico == "/wifi" and comando == "scan":
+        pass
+    
+    
+
 
     else:
         print(f"{Style.BRIGHT}{Fore.RED}[!]{Style.RESET_ALL}{Fore.RED} '{comando}' no es un comando válido, escribe help para listar los comandos disponibles.{Style.RESET_ALL}\n")
