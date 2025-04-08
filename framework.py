@@ -52,16 +52,43 @@ def interfaces_inhalambricas():
                 interfaces_modos.append((interfaz_actual, modo_concreto))
 
 
-    # si no se encuentra ninguna interfaz:
+        # si no se encuentra ninguna interfaz:
         if not interfaces_modos:
             print(f"\n{Fore.RED}[!] No se han encontrado interfaces inhalambricas!")
         else:
             cantidad = len(interfaces_modos)
-            print(f"{Fore.BLUE}{Style.BRIGHT}[+]{Style.RESET_ALL} {Fore.CYAN}{cantidad}{Style.RESET_ALL} interfaces inhalambricas encontradas:\n")
+            if cantidad > 1:
+                print(f"{Fore.BLUE}{Style.BRIGHT}[+]{Style.RESET_ALL} {Fore.CYAN}{cantidad}{Style.RESET_ALL} interfaces inhalambricas encontradas:\n")
+            else:
+                print(f"{Fore.BLUE}{Style.BRIGHT}[+]{Style.RESET_ALL} {Fore.CYAN}{cantidad}{Style.RESET_ALL} interfaz inhalámbrica encontrada:\n")
+            
+            # cálculo dinámico de las interfaces
+            max_iface_len = max(len(iface) for iface, _ in interfaces_modos)
+            max_mode_len = max(len(modo) for _, modo in interfaces_modos)
 
+            # padding adicional para mejorar visualización
+            iface_col_width = max_iface_len + 10
+            mode_col_width = max_mode_len + 10
+
+            # línea separadora
+            linea = "+" + "-" * iface_col_width + "+" + "-" * mode_col_width + "+"
+
+            # Encabezado
+            print(linea)
+            print(f" {Fore.YELLOW}{'Interfaz'.ljust(iface_col_width)} {'Modo'.ljust(mode_col_width)} {Style.RESET_ALL}")
+            print(linea)
+
+            # filas de datos
             for iface, modo in interfaces_modos:
-                print(f"{Fore.GREEN}Interfaz:{Style.RESET_ALL} {iface}")
-                print(f"{Fore.GREEN}Modo:{Style.RESET_ALL} {modo}\n")
+                # Aplicar ljust() y color al modo
+                modo_formateado = modo.ljust(mode_col_width)
+                if modo_formateado == "Managed".ljust(mode_col_width):  # Compara con ljust también
+                    modo_formateado = f"{Fore.MAGENTA}{modo_formateado}{Style.RESET_ALL}"
+                if modo_formateado == "Monitor".ljust(mode_col_width):  # Compara con ljust también
+                    modo_formateado = f"{Fore.GREEN}{Style.BRIGHT}{modo_formateado}{Style.RESET_ALL}"
+    
+                print(f" {Fore.CYAN}{iface.ljust(iface_col_width)}{Style.RESET_ALL} {modo_formateado} ")
+                print(linea)
     else:
         print(f"{Fore.RED}[!] Windows no es compatible con el módulo wifi!{Style.RESET_ALL}")
 interfaces_inhalambricas()
