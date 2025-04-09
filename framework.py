@@ -5,14 +5,13 @@ from colorama import Fore, Style, init
 import time 
 import sys
 import subprocess
-from modules.wifi_module import interfaces_inhalambricas
-from modules.bluetooth_module import bluetooth_module
+from modules import wifi_module
+from modules import bluetooth_module
 
 # variables de formateo y colores
 subrayado = '\033[4m'
 morado = '\033[38;5;135m'
 
-interfaces_inhalambricas()
 
 # sistema operativo y arquitectura
 sistema = platform.system()
@@ -163,7 +162,8 @@ def comandos(comando):
     # comandos wifi 
     elif modulo_especifico == "/wifi" and comando == "scan":
         pass
-    
+    elif modulo_especifico == "/wifi" and comando == "interfaces":
+        wifi_module.interfaces()
     
 
 
