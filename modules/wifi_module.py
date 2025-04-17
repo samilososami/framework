@@ -4,10 +4,24 @@ from colorama import Fore, Style
 import subprocess
 import platform
 import time
+import signal
+import sys
+
+
 
 sistema = platform.system()
 
+# variables globales
+interfaz_principal = "" 
+redes_wifi = []
+
+
+
 def interfaces():
+    global interfaz_principal
+    global modo_sin_formato
+    interfaz_principal = ""
+
     if sistema == "Linux":
         resultado_iwconfig = subprocess.run(["iwconfig"], capture_output=True, text=True)
 
@@ -65,21 +79,64 @@ def interfaces():
             print()
             
             nombres_interfaces = [iface for iface, _ in interfaces_modos]
-            interfaz_principal = ""
             while interfaz_principal not in nombres_interfaces:
                 interfaz_principal = input(f"{Fore.GREEN}[+]{Style.RESET_ALL} Escoge una interfaz: ")
+                print()
                 if interfaz_principal not in nombres_interfaces:
                     print(f"{Fore.RED}[!] La interfaz no se encuentra entre las detectadas!{Style.RESET_ALL}")
-
-                
-            if modo_sin_formato == "Monitor":
-                print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Modo monitor activado previamente.")
-            else:
-                print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Activando modo monitor...")
-                time.sleep(0.5)
-                subprocess.run(["airmon-ng", "start", interfaz_principal])
-
     else:
         print(f"{Fore.RED}[!] {sistema} no es compatible con el módulo wifi!{Style.RESET_ALL}")
 
-  
+
+def modo_monitor():
+    if interfaz_principal == "":
+        print(f"{Fore.RED}[!] Escoge una interfaz primero!{Style.RESET_ALL}")
+        return
+    
+    if modo_sin_formato == "Monitor":
+        print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Modo monitor activado previamente.\n")
+    else:
+        print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Activando modo monitor en {interfaz_principal}...")
+        time.sleep(0.5)
+        subprocess.run(["airmon-ng", "start", interfaz_principal], capture_output=True, text=True)
+
+        time.sleep(1)
+
+        resultado_post = subprocess.run(["iwconfig"], capture_output=True, text=True)
+
+        modo_actual = None
+        for line in resultado_post.stdout.splitlines():
+            if line.startswith(interfaz_principal):
+                interfaz_actual = line.split()[0]
+            elif "Mode:" in line and interfaz_actual == interfaz_principal:
+                contenido = line.split(":")[1].strip()
+                modo_actual = contenido.split()[0]
+                break  
+        # comprobamos el resultado
+        if modo_actual == "Monitor":
+            print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Se ha activado el modo monitor correctamente en {interfaz_principal}.\n")
+        else:
+            print(f"{Fore.RED}[!] No se ha podido activar el modo monitor en {interfaz_principal}.\n")
+
+
+
+def escanear_redes_en_xterm():
+    if interfaz_principal == "":
+        print(f"{Fore.RED}[!] Escoge una interfaz primero!{Style.RESET_ALL}")
+        return
+
+    if modo_sin_formato != "Monitor":
+        print(f"{Fore.RED}[!] El modo monitor no está activado en {interfaz_principal}. Activando el modo monitor primero.")
+        return
+
+    print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Escaneando redes en {interfaz_principal}...")
+
+    # Ejecuta airodump-ng en un proceso en segundo plano
+    proceso = subprocess.Popen(["airodump-ng", interfaz_principal])
+
+    # Espera 10 segundos para escanear y luego detén el proceso
+    time.sleep(10)
+    proceso.terminate()
+    print(f"{Fore.GREEN}[+]{Style.RESET_ALL} Escaneo detenido.")
+
+ 
