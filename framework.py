@@ -7,6 +7,7 @@ import sys
 import subprocess
 from modules import wifi_module
 from modules import bluetooth_module
+import getpass
 
 # variables de formateo y colores
 subrayado = '\033[4m'
@@ -18,7 +19,7 @@ sistema = platform.system()
 arquitectura = platform.architecture()[0]
 
 # variables de estética
-usuario = os.getlogin()
+usuario = getpass.getuser()
 
 
 # variables de prompt
