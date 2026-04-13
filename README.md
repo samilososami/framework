@@ -1,19 +1,38 @@
-# Framework de explotación para Windows 7
+<div align="center">
 
-## Introducción
+# Modular Security Framework
 
-Este repositorio contiene un framework diseñado con la idea de explotación de sistemas antiguos basados en **Windows 7**. Su propósito es servir de base para pruebas de penetración y de explotación en entornos *legacy* que todavía utilizan este sistema operativo.
+Marco de trabajo extensible diseñado para la automatización de auditorías de protocolos de red e inalámbricos, facilitando la ejecución de ataques controlados y herramientas de análisis.
 
-## Características
+<br>
 
-- **Compatibilidad con Windows 7:** pensado específicamente para sistemas que ya no reciben soporte oficial.
-- **Diseño modular:** permite añadir diferentes exploits, payloads y módulos según las necesidades.
-- **Enfoque educativo:** útil para estudiar y comprender cómo funcionan las vulnerabilidades en sistemas antiguos.
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+<img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux" />
 
-## Estado del proyecto
+</div>
 
-El proyecto se encuentra en una fase inicial de desarrollo. Próximamente se añadirá documentación detallada, ejemplos y contribuciones de la comunidad.
+---
 
-## Contribuciones
+### ✦ Características
 
-Las contribuciones son bienvenidas. Si deseas aportar mejoras o reportar problemas, por favor abre un *issue* o envía un *pull request*.
+*   **Arquitectura Modular**: Sistema basado en módulos independientes que pueden cargarse dinámicamente según el objetivo de la auditoría.
+*   **Módulos Inalámbricos**: Soporte inicial para ataques en protocolos **WiFi** y **Bluetooth**.
+*   **Interfaz de Comandos**: Prompt interactivo para la gestión fluida de herramientas y visualización de resultados.
+*   **Enfoque Educativo**: Diseñado para el estudio de vulnerabilidades en sistemas y protocolos.
+
+### ✦ Instalación
+
+1.  Clone el repositorio:
+    ```bash
+    git clone https://github.com/samilososami/framework.git
+    cd framework
+    ```
+2.  Inicie el framework:
+    ```bash
+    python3 framework.py
+    ```
+
+---
+
+> [!NOTE]
+> El proyecto se encuentra en desarrollo activo para expandir el número de módulos disponibles.
